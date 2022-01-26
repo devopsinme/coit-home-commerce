@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "coit-hc-ad-svc-release.fullname" . }}
+  name: {{ include "coithc-ad-svc.fullname" . }}
   labels:
-    {{- include "coit-hc-ad-svc-release.labels" . | nindent 4 }}
+    {{- include "coithc-ad-svc.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "coit-hc-ad-svc-release.selectorLabels" . | nindent 4 }}
+    {{- include "coithc-ad-svc.selectorLabels" . | nindent 4 }}

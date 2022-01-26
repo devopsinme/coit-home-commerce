@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "coit-hc-ad-svc-release.fullname" . }}
+  name: {{ include "coithc-ad-svc.fullname" . }}
   labels:
-    {{- include "coit-hc-ad-svc-release.labels" . | nindent 4 }}
+    {{- include "coithc-ad-svc.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "coit-hc-ad-svc-release.fullname" . }}
+    name: {{ include "coithc-ad-svc.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
