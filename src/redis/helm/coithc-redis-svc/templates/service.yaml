@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "coithc-redis-svc.fullname" . }}
-  labels:
-    {{- include "coithc-redis-svc.labels" . | nindent 4 }}
+  name: redis-cart
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+  type: ClusterIP
   selector:
-    {{- include "coithc-redis-svc.selectorLabels" . | nindent 4 }}
+    app: redis-cart
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
