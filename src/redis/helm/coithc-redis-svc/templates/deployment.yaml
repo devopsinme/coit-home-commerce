@@ -1,63 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "coithc-redis-svc.fullname" . }}
-  labels:
-    {{- include "coithc-redis-svc.labels" . | nindent 4 }}
+  name: redis-cart
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "coithc-redis-svc.selectorLabels" . | nindent 6 }}
+      app: redis-cart
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "coithc-redis-svc.selectorLabels" . | nindent 8 }}
+        app: redis-cart
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "coithc-redis-svc.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.container.port }}
-          readinessProbe:
-            periodSeconds: 5
-            tcpSocket:
-              port: 6379
-          livenessProbe:
-            periodSeconds: 5
-            tcpSocket:
-              port: 6379
-          volumeMounts:
-          - mountPath: /data
-            name: redis-data
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      - name: redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
+        readinessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        livenessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+#        resources:
+#          limits:
+##            memory: 256Mi
+#            cpu: 125m
+#          requests:
+#            cpu: 70m
+#            memory: 200Mi
+      volumes:
+      - name: redis-data
+        emptyDir: {}
