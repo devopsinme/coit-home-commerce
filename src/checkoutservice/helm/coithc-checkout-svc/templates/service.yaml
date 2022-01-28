@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "coithc-checkout-svc.fullname" . }}
+  labels:
+    {{- include "coithc-checkout-svc.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      name: grpc
+  selector:
+    {{- include "coithc-checkout-svc.selectorLabels" . | nindent 4 }}
